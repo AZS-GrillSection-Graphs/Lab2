@@ -7,7 +7,7 @@
 
 class RandomSimpleGraph : public SimpleGraph {
 public:
-    //RandomSimpleGraph(std::string& grapicSeries) : SimpleGraph(grapicSeries) {}
+    RandomSimpleGraph(std::string& grapicSeries);
     void RandomizeGraph();
 };
 

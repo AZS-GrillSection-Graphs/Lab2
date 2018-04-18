@@ -1,8 +1,17 @@
-//
-// Created by przemek on 16.04.18.
-//
-
 #ifndef GRAPHS2_SIMPLEGRAPH_H
 #define GRAPHS2_SIMPLEGRAPH_H
+
+#include <string>
+#include "Graph.h"
+
+class SimpleGraph : public Graph{
+public:
+    explicit SimpleGraph(std::string& numberSeries);
+    static bool IsGraphicSeries(std::string& stringToCheck);
+
+private:
+    static std::vector<int> getNumbers(const std::string &numberSeries);
+};
+
 
 #endif //GRAPHS2_SIMPLEGRAPH_H

@@ -1,11 +1,11 @@
+#include "AdjacencyList.h"
 #include <sstream>
 #include <fstream>
 #include <iostream>
-#include "AdjacencyList.h"
+#include <algorithm>
 
 
-AdjacencyList::AdjacencyList(std::ifstream &inputFile)
-{
+AdjacencyList::AdjacencyList(std::ifstream &inputFile) {
     std::vector<std::vector <int> >row;
     std::string line;
 
@@ -27,18 +27,222 @@ AdjacencyList::AdjacencyList(std::ifstream &inputFile)
 
         m_adjList.push_back(col);
     }
+    m_initials = "LS";
 }
 
-void AdjacencyList::Print() const
-{
+void AdjacencyList::Print() const {
+    std::cout << "Adjacency list:\n";
+    const int verticesNumber = m_adjList.size();
+    for(int i = 0; i < verticesNumber; ++i)
+    {
+        const int linksNumber = m_adjList[i].size();
+        std::cout << i+1 << ": ";
+        for(int j = 0; j < linksNumber; ++j)
+        {
+            std::cout << m_adjList[i][j] + 1 << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+AdjacencyList::AdjacencyList(const int verticesNumber) {
+    srand(time(nullptr));
+    for(int i=0; i<verticesNumber; ++i) {
+        std::vector<int> row;
+        m_adjList.push_back(row);
+    }
+    m_initials = "LS";
+}
+
+void AdjacencyList::MakeConnectBetween(const int firstVertex, const int secondVertex) {
+    m_adjList[firstVertex].push_back(secondVertex);
+    m_adjList[secondVertex].push_back(firstVertex);
+}
+
+void AdjacencyList::DeleteEdge(const int firstVertex, const int secondVertex) {
+    m_adjList[firstVertex].erase(
+            std::find(m_adjList[firstVertex].begin(), m_adjList[firstVertex].end(), secondVertex));
+    m_adjList[secondVertex].erase(
+            std::find(m_adjList[secondVertex].begin(), m_adjList[secondVertex].end(), firstVertex));
+}
+
+bool AdjacencyList::AreVerticesConnected(const int firstVertex, const int secondVertex) const {
+    bool firstInSecondPresent = std::find(m_adjList[secondVertex].begin(), m_adjList[secondVertex].end(), firstVertex)
+                         != m_adjList[secondVertex].end();
+
+    bool secondInFirstPresent = std::find(m_adjList[firstVertex].begin(), m_adjList[firstVertex].end(), secondVertex)
+                         != m_adjList[firstVertex].end();
+
+    return firstInSecondPresent && secondInFirstPresent;
+}
+
+void AdjacencyList::SaveToFile(const char *fileName) const {
+    std::ofstream file;
+
+    if (!file.is_open())
+    {
+        file.open(fileName, std::ios::out);
+
+        if(!file)
+        {
+            std::cerr << "Failed to open " << fileName << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    file << m_initials << std::endl;
+
     const int verticesNumber = m_adjList.size();
     for(int i = 0; i < verticesNumber; ++i)
     {
         const int linksNumber = m_adjList[i].size();
         for(int j = 0; j < linksNumber; ++j)
         {
-            std::cout << m_adjList[i][j] << " ";
+            file << m_adjList[i][j] + 1 << " ";
         }
-        std::cout << std::endl;
+        file << std::endl;
     }
+
+    file.close();
+}
+
+void AdjacencyList::Convert() const {
+    ////////// Macierz sasiedztwa //////////
+    std::ofstream adjMatrixFile;
+
+    if (!adjMatrixFile.is_open())
+    {
+        adjMatrixFile.open("MacierzSasiedztwa.txt", std::ios::out);
+
+        if(!adjMatrixFile)
+        {
+            std::cerr << "Failed to open " << "MacierzSasiedztwa.txt" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    const int verticesNumber = m_adjList.size();
+    adjMatrixFile << "MS" << std::endl;
+
+    int ** adjMatrix = new int * [verticesNumber];
+    for(int i = 0; i < verticesNumber; ++i)
+    {
+        adjMatrix[i] = new int [verticesNumber];
+        for(int j = 0; j < verticesNumber; ++j)
+        {
+            adjMatrix[i][j] = 0;
+        }
+    }
+
+
+    for(int i = 0; i < verticesNumber; ++i)
+    {
+        for(int j = 0; j < m_adjList[i].size(); ++j)
+        {
+            adjMatrix[i][m_adjList[i][j]] = 1;
+        }
+
+        for(int j = 0; j < verticesNumber; ++j)
+        {
+            adjMatrixFile << adjMatrix[i][j] << " ";
+        }
+        adjMatrixFile << std::endl;
+    }
+    adjMatrixFile.close();
+
+
+    ////////// Macierz incydencji //////////
+    std::ofstream incMatrixFile;
+
+    if (!incMatrixFile.is_open())
+    {
+        incMatrixFile.open("MacierzIncydencji.txt", std::ios::out);
+
+        if(!incMatrixFile)
+        {
+            std::cerr << "Failed to open " << "MacierzIncydencji.txt" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+
+    int numOfEdges = 0;
+    incMatrixFile << "MI" << std::endl;
+    for(int i = 0; i < verticesNumber; ++i)
+        for(int j = i + 1; j < verticesNumber; ++j)
+            numOfEdges += adjMatrix[i][j];
+
+
+    int ** incMatrix = new int * [numOfEdges];
+    for(int i = 0; i < numOfEdges; ++i)
+    {
+        incMatrix[i] = new int [verticesNumber];
+        for(int j = 0; j < verticesNumber; ++j)
+        {
+            incMatrix[i][j] = 0;
+        }
+    }
+
+    int edge = 0;
+
+    for(int i = 0; i < verticesNumber; ++i)
+    {
+        for(int j = i + 1; j < verticesNumber; ++j)
+        {
+            if(adjMatrix[i][j] == 1)
+            {
+                incMatrix[edge][i] = 1;
+                incMatrix[edge][j] = 1;
+                ++edge;
+            }
+        }
+    }
+
+    for(int j = 0; j < verticesNumber; ++j)
+    {
+        for(int i = 0; i < edge; ++i)
+        {
+            if(incMatrix[i][j] == 1)
+                incMatrixFile << "1 ";
+            else
+                incMatrixFile << "0 ";
+        }
+        incMatrixFile << std::endl;
+    }
+    incMatrixFile.close();
+
+    for(int i = 0; i < verticesNumber; ++i)
+        delete [] adjMatrix[i];
+
+    delete [] adjMatrix;
+
+    for(int i = 0; i < numOfEdges; ++i)
+        delete [] incMatrix[i];
+
+    delete [] incMatrix;
+}
+
+void AdjacencyList::RelaxEdge(const int edgeStart, const int edgeEnd) {
+    int spareEdgeStart;
+    int spareEdgeEnd;
+
+    do
+        spareEdgeStart = rand()%m_adjList.size();
+    while(spareEdgeStart == edgeStart || spareEdgeStart == edgeEnd);
+
+    do
+        spareEdgeEnd = m_adjList[spareEdgeStart][rand()%m_adjList[spareEdgeStart].size()];
+    while(spareEdgeEnd == edgeStart || spareEdgeEnd == edgeEnd);
+
+    DeleteEdge(spareEdgeStart, spareEdgeEnd);
+    DeleteEdge(edgeStart, edgeEnd);
+    MakeConnectBetween(edgeStart, spareEdgeEnd);
+    MakeConnectBetween(spareEdgeStart, edgeEnd);
+}
+
+void AdjacencyList::RelaxEdge() {
+    int edgeStart = rand()%m_adjList.size();
+    int edgeEnd = m_adjList[edgeStart][rand()%m_adjList[edgeStart].size()];
+
+    RelaxEdge(edgeStart, edgeEnd);
 }
