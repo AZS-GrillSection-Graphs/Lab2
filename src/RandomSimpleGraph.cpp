@@ -4,11 +4,11 @@
 
 
 RandomSimpleGraph::RandomSimpleGraph(std::string &grapicSeries) : SimpleGraph(grapicSeries) {
-    RandomizeGraph();
+    RandomizeGraph(10);
 }
 
-void RandomSimpleGraph::RandomizeGraph() {
-    for (int i=0; i<10; ++i)
+void RandomSimpleGraph::RandomizeGraph(const int iterations) {
+    for (int i=0; i<iterations; ++i)
         RelaxEdge();
     std::cout << "After randomization\n";
     Print();

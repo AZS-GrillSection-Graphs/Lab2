@@ -9,6 +9,7 @@ class Graph
 {
 public:
     explicit Graph(const char * inputFileName);
+    explicit Graph(GraphRepresentation * inputGraphReprezentation) : m_graphRepr(inputGraphReprezentation) {}
     explicit Graph() {};
     ~Graph();
     void Print() const;
@@ -17,7 +18,8 @@ public:
     void RelaxEdge();
     void RelaxEdge(const int edgeStart, const int edgeEnd);
     int NumberOfComponents() const;
-    Graph& BiggestComponent() const;
+    Graph & BiggestComponent() const;
+    void DrawGraph() const;
 
 protected:
     GraphRepresentation * m_graphRepr;

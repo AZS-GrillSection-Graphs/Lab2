@@ -11,6 +11,8 @@ public:
 
 private:
     static std::vector<int> getNumbers(const std::string &numberSeries);
+
+    void ConvertFromNumberSeries(std::vector<int> &vertexLinks);
 };
 
 

@@ -15,46 +15,15 @@ SimpleGraph::SimpleGraph(std::string &numberSeries) {
     }
 
     std::vector<int> vertexLinks = getNumbers(numberSeries);
-    std::sort(vertexLinks.begin(), vertexLinks.end(), std::greater<int>());
+    m_graphRepr = new AdjacencyList(vertexLinks.size());
 
-    const int verticesNumber = static_cast<const int>(vertexLinks.size());
-    m_graphRepr = new AdjacencyList(verticesNumber);
-
-    for(int i=0; i < verticesNumber; ++i) {
-        int index = i+1;
-        if(i < verticesNumber-1) {
-            while (vertexLinks[i] > 0) {
-                while (m_graphRepr->AreVerticesConnected(i, index) || vertexLinks[index] == 0)
-                    ++index;
-                if ( index < verticesNumber ) {
-                    --vertexLinks[index];
-                    m_graphRepr->MakeConnectBetween(i, index);
-                } else {
-                    --vertexLinks[i];
-                    m_graphRepr->MakeConnectBetween(i, i);
-                    RelaxEdge(i, i);
-                }
-                --vertexLinks[i];
-            }
-        } else {
-            while(vertexLinks[i] > 0)
-            {
-                --vertexLinks[i];
-                --vertexLinks[i];
-                m_graphRepr->MakeConnectBetween(i, i);
-                RelaxEdge(i, i);
-            }
-        }
-
-    }
+    ConvertFromNumberSeries(vertexLinks);
     Print();
 }
 
 bool SimpleGraph::IsGraphicSeries(std::string &stringToCheck) {
     std::stringstream stream(stringToCheck);
     std::vector<int> seriesToCheck = getNumbers(stringToCheck);
-
-    std::sort(seriesToCheck.begin(), seriesToCheck.end(), std::greater<int>());
 
     while(true) {
         if(*seriesToCheck.begin() == 0 && *(--seriesToCheck.end()) == 0)
@@ -80,5 +49,38 @@ std::vector<int> SimpleGraph::getNumbers(const std::string &numberSeries) {
     while(stream >> number) {
             vertexLinks.push_back(number);
     }
+
+    std::sort(vertexLinks.begin(), vertexLinks.end(), std::greater<int>());
     return vertexLinks;
+}
+
+void SimpleGraph::ConvertFromNumberSeries(std::vector<int> &vertexLinks) {
+    const int verticesNumber = static_cast<const int>(vertexLinks.size());
+
+    for(int i=0; i < verticesNumber; ++i) {
+        int index = i + 1;
+        if(i < verticesNumber-1) {
+            while (vertexLinks[i] > 0) {
+                while (m_graphRepr->AreVerticesConnected(i, index) || vertexLinks[index] == 0)
+                    ++index;
+                if ( index < verticesNumber ) {
+                    --vertexLinks[index];
+                    m_graphRepr->MakeConnectBetween(i, index);
+                } else {
+                    --vertexLinks[i];
+                    m_graphRepr->MakeConnectBetween(i, i);
+                    RelaxEdge(i, i);
+                }
+                --vertexLinks[i];
+            }
+        } else {
+            while(vertexLinks[i] > 0)
+            {
+                --vertexLinks[i];
+                --vertexLinks[i];
+                m_graphRepr->MakeConnectBetween(i, i);
+                RelaxEdge(i, i);
+            }
+        }
+    }
 }

@@ -12,7 +12,12 @@ public:
     virtual void RelaxEdge() = 0;
     virtual void SaveToFile(const char *fileName) const = 0;
     virtual void Convert() const = 0;
+    virtual GraphRepresentation * BiggestComponent() = 0;
     virtual ~GraphRepresentation() = default;
+
+protected:
+    virtual void BiggestComponent_R(const int componentNumber, const int index, std::vector <int> & componentsOfVerticles) = 0;
+    virtual int IndexOfBiggestComponent(const std::vector <int> componentsOfVerticles) const = 0;
 };
 
 #endif //LAB1_GRAPHREPRESENTATION_H

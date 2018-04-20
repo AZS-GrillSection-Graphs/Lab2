@@ -53,7 +53,10 @@ void Graph::ConvertGraph() const {
 void Graph::SaveToFile(const char *fileName) const {
     m_graphRepr->SaveToFile(fileName);
     m_graphRepr->Convert();
-    std::string drawing = "python3 GraphVisualization.py MacierzIncydencji.txt";
+}
+
+void Graph::DrawGraph() const {
+    std::__cxx11::string drawing = "python3 GraphVisualization.py MacierzIncydencji.txt";
     system(drawing.c_str());
 }
 
@@ -64,4 +67,9 @@ void Graph::RelaxEdge() {
 void Graph::RelaxEdge(const int edgeStart, const int edgeEnd) {
     m_graphRepr->RelaxEdge(edgeStart, edgeEnd);
 
+}
+
+Graph & Graph::BiggestComponent() const {
+    Graph * testGraph = new Graph(m_graphRepr->BiggestComponent());  //potrzebna dealokacja pamieci
+    return *testGraph;
 }

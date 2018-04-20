@@ -3,6 +3,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <iterator>
 
 
 AdjacencyList::AdjacencyList(std::ifstream &inputFile) {
@@ -74,7 +75,7 @@ bool AdjacencyList::AreVerticesConnected(const int firstVertex, const int second
                          != m_adjList[firstVertex].end();
 
     return firstInSecondPresent && secondInFirstPresent;
-}
+    }
 
 void AdjacencyList::SaveToFile(const char *fileName) const {
     std::ofstream file;
@@ -222,17 +223,34 @@ void AdjacencyList::Convert() const {
     delete [] incMatrix;
 }
 
-void AdjacencyList::RelaxEdge(const int edgeStart, const int edgeEnd) {
+void AdjacencyList::RelaxEdge() {
+    int edgeStart = static_cast<int>(rand() % m_adjList.size());
+    int edgeEnd = m_adjList[edgeStart][rand() % m_adjList[edgeStart].size()];
+
+    RelaxEdge(edgeStart, edgeEnd);
+}
+
+void AdjacencyList::RelaxEdge(int edgeStart,int edgeEnd) {
     int spareEdgeStart;
     int spareEdgeEnd;
 
     do
-        spareEdgeStart = rand()%m_adjList.size();
+        spareEdgeStart = static_cast<int>(rand() % m_adjList.size());
     while(spareEdgeStart == edgeStart || spareEdgeStart == edgeEnd);
 
-    do
-        spareEdgeEnd = m_adjList[spareEdgeStart][rand()%m_adjList[spareEdgeStart].size()];
-    while(spareEdgeEnd == edgeStart || spareEdgeEnd == edgeEnd);
+//    do {
+        spareEdgeEnd = m_adjList[spareEdgeStart][rand() % m_adjList[spareEdgeStart].size()];
+//    }
+//    while(spareEdgeEnd == edgeStart || spareEdgeEnd == edgeEnd);
+
+    if(edgeStart == spareEdgeEnd)
+        std::swap(edgeStart, edgeEnd);
+
+    if(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd))
+        std::swap(edgeStart, edgeEnd);
+//
+//    if(AreVerticesConnected(spareEdgeStart, edgeEnd))
+//        std::swap(spareEdgeStart, spareEdgeEnd);
 
     DeleteEdge(spareEdgeStart, spareEdgeEnd);
     DeleteEdge(edgeStart, edgeEnd);
@@ -240,9 +258,63 @@ void AdjacencyList::RelaxEdge(const int edgeStart, const int edgeEnd) {
     MakeConnectBetween(spareEdgeStart, edgeEnd);
 }
 
-void AdjacencyList::RelaxEdge() {
-    int edgeStart = rand()%m_adjList.size();
-    int edgeEnd = m_adjList[edgeStart][rand()%m_adjList[edgeStart].size()];
+GraphRepresentation * AdjacencyList::BiggestComponent() {
+    int componentNumber = -1;
+    std::vector <int> componentsOfVerticles(m_adjList.size(), -1);
 
-    RelaxEdge(edgeStart, edgeEnd);
+    for(int i = 0; i < componentsOfVerticles.size(); i++) {
+        if(componentsOfVerticles[i] == -1) {
+            componentNumber++;
+            componentsOfVerticles[i] = componentNumber;
+            BiggestComponent_R(componentNumber, i, componentsOfVerticles);
+        }
+    }
+
+    int indexOfBiggestComponent = IndexOfBiggestComponent(componentsOfVerticles);
+    AdjacencyList * biggestComponent = new AdjacencyList(*this);
+
+    RemoveOtherComponents(componentsOfVerticles, indexOfBiggestComponent, biggestComponent);
+
+    return biggestComponent;
 }
+
+void AdjacencyList::RemoveOtherComponents(const std::vector<int> &componentsOfVerticles,const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const {
+    for(int i = 0; i < this->m_adjList.size(); i++) {
+        if(componentsOfVerticles[i] != indexOfBiggestComponent) {
+            biggestComponent->GetAdjList().erase(std::next(biggestComponent->GetAdjList().begin(), i));
+        }
+    }
+
+}
+
+void AdjacencyList::BiggestComponent_R(const int componentNumber, const int index, std::vector <int> & componentsOfVerticles){
+    for(int i = 0; i < m_adjList[index].size(); i++) {
+        if(componentsOfVerticles[m_adjList[index][i]] == -1) {
+            componentsOfVerticles[m_adjList[index][i]] = componentNumber;
+            BiggestComponent_R(componentNumber, m_adjList[index][i], componentsOfVerticles);
+        }
+    }
+}
+
+int AdjacencyList::IndexOfBiggestComponent(const std::vector<int> componentsOfVerticles) const {
+    int mostOccurrences = 0;
+    int mostCommon = 0;
+
+    for(int i = 0; i < componentsOfVerticles.size(); i++) {
+        int occurrences = static_cast<int>(count(componentsOfVerticles.begin(), componentsOfVerticles.end(), componentsOfVerticles[i]));
+
+        if(occurrences > mostOccurrences)
+        {
+            mostOccurrences = occurrences;
+            mostCommon = componentsOfVerticles[i];
+        }
+    }
+
+    return mostCommon;
+}
+
+
+
+
+
+
