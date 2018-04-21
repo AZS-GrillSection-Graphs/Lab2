@@ -24,7 +24,7 @@ public:
 private:
     void BiggestComponent_R(const int componentNumber, const int index, std::vector <int> & componentsOfVerticles);
     virtual int IndexOfBiggestComponent(const std::vector <int> componentsOfVerticles) const override;
-    void RemoveOtherComponents(const std::vector<int> &componentsOfVerticles, const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const;
+    void RemoveOtherComponents(std::vector<int> &componentsOfVerticles, const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const;
     void DeleteEdge(const int firstVertex, const int secondVertex);
     std::string m_initials;
 

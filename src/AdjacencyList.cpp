@@ -278,15 +278,6 @@ GraphRepresentation * AdjacencyList::BiggestComponent() {
     return biggestComponent;
 }
 
-void AdjacencyList::RemoveOtherComponents(const std::vector<int> &componentsOfVerticles,const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const {
-    for(int i = 0; i < this->m_adjList.size(); i++) {
-        if(componentsOfVerticles[i] != indexOfBiggestComponent) {
-            biggestComponent->GetAdjList().erase(std::next(biggestComponent->GetAdjList().begin(), i));
-        }
-    }
-
-}
-
 void AdjacencyList::BiggestComponent_R(const int componentNumber, const int index, std::vector <int> & componentsOfVerticles){
     for(int i = 0; i < m_adjList[index].size(); i++) {
         if(componentsOfVerticles[m_adjList[index][i]] == -1) {
@@ -311,6 +302,18 @@ int AdjacencyList::IndexOfBiggestComponent(const std::vector<int> componentsOfVe
     }
 
     return mostCommon;
+}
+
+void AdjacencyList::RemoveOtherComponents(std::vector<int> &componentsOfVerticles,const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const {
+    int currentSize = static_cast<int>(biggestComponent->GetAdjList().size());
+    for(int i = 0; i < currentSize; i++) {
+        if(componentsOfVerticles[i] != indexOfBiggestComponent) {
+            biggestComponent->GetAdjList().erase(std::next(biggestComponent->GetAdjList().begin(), i));
+            componentsOfVerticles.erase(std::next(componentsOfVerticles.begin(), i));
+            currentSize--;
+        }
+    }
+
 }
 
 
