@@ -6,17 +6,19 @@ int main() {
     std::string inputString("5 4 4 3 2 2 2");
 
 //    std::cout << "Is the string a graphic series? " << SimpleGraph::IsGraphicSeries(inputString) << std::endl;
-//    SimpleGraph simpleGraph(inputString);
+    SimpleGraph simpleGraph(inputString);
 //    simpleGraph.SaveToFile("ListaSasiedztwa.txt");
 //    simpleGraph.DrawGraph();
 
-    std::cout << "RANDOM SIMPLE GRAPH\n";
-    RandomSimpleGraph randomSimpleGraph(inputString);
+//    std::cout << "RANDOM SIMPLE GRAPH\n";
+//    RandomSimpleGraph randomSimpleGraph(inputString);
 //    randomSimpleGraph.SaveToFile("ListaSasiedztwa.txt");
 //    randomSimpleGraph.DrawGraph();
 
-    Graph testGraph = randomSimpleGraph.BiggestComponent();
-    testGraph.Print();
+    Graph biggestComponent = simpleGraph.BiggestComponent();
+    biggestComponent.SaveToFile("ListaSasiedztwa.txt");
+    biggestComponent.Print();
+    biggestComponent.DrawGraph();
 
     return 0;
 }

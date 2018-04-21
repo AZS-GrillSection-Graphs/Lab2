@@ -248,7 +248,7 @@ void AdjacencyList::RelaxEdge(int edgeStart,int edgeEnd) {
 
     if(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd))
         std::swap(edgeStart, edgeEnd);
-//
+
 //    if(AreVerticesConnected(spareEdgeStart, edgeEnd))
 //        std::swap(spareEdgeStart, spareEdgeEnd);
 
@@ -306,11 +306,24 @@ int AdjacencyList::IndexOfBiggestComponent(const std::vector<int> componentsOfVe
 
 void AdjacencyList::RemoveOtherComponents(std::vector<int> &componentsOfVerticles,const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const {
     int currentSize = static_cast<int>(biggestComponent->GetAdjList().size());
+    int numOfIndexChanges = 0;
+
     for(int i = 0; i < currentSize; i++) {
         if(componentsOfVerticles[i] != indexOfBiggestComponent) {
             biggestComponent->GetAdjList().erase(std::next(biggestComponent->GetAdjList().begin(), i));
+
+            if(componentsOfVerticles[i] < indexOfBiggestComponent)
+                numOfIndexChanges++;
             componentsOfVerticles.erase(std::next(componentsOfVerticles.begin(), i));
+
             currentSize--;
+            i--;
+        }
+    }
+
+    for(int i = 0; i < biggestComponent->GetAdjList().size(); i++) {
+        for(int j = 0; j < biggestComponent->GetAdjList()[i].size(); j++) {
+            biggestComponent->GetAdjList()[i][j] -= numOfIndexChanges;
         }
     }
 

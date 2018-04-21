@@ -70,6 +70,6 @@ void Graph::RelaxEdge(const int edgeStart, const int edgeEnd) {
 }
 
 Graph & Graph::BiggestComponent() const {
-    Graph * testGraph = new Graph(m_graphRepr->BiggestComponent());  //potrzebna dealokacja pamieci
+    Graph * testGraph = new Graph(m_graphRepr->BiggestComponent());
     return *testGraph;
 }
