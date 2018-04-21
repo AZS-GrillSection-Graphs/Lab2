@@ -19,13 +19,15 @@ public:
     void RelaxEdge() override;
     void SaveToFile(const char *fileName) const override;
     void Convert() const override;
-    GraphRepresentation * BiggestComponent() override;
-    std::vector< std::vector<int> > & GetAdjList() {return m_adjList;}
+    std::vector <int> Components() override;
+    GraphRepresentation *BiggestComponent() override;
+    std::vector< std::vector<int> > & GetAdjList() override {return m_adjList;}
+    void DeleteEdge(const int firstVertex, const int secondVertex);   //zmienilem z private, na potrzeby EulerCycle
 private:
-    void BiggestComponent_R(const int componentNumber, const int index, std::vector <int> & componentsOfVerticles);
+    void Components_R(const int componentNumber, const int index, std::vector<int> &componentsOfVerticles);
     virtual int IndexOfBiggestComponent(const std::vector <int> componentsOfVerticles) const override;
     void RemoveOtherComponents(std::vector<int> &componentsOfVerticles, const int indexOfBiggestComponent, AdjacencyList *biggestComponent) const;
-    void DeleteEdge(const int firstVertex, const int secondVertex);
+
     std::string m_initials;
 
     std::vector< std::vector<int> > m_adjList;

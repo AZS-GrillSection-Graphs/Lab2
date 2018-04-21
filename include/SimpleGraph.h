@@ -6,11 +6,11 @@
 
 class SimpleGraph : public Graph{
 public:
-    explicit SimpleGraph(std::string& numberSeries);
-    static bool IsGraphicSeries(std::string& stringToCheck);
+    explicit SimpleGraph(std::string  numberSeries);
+    static bool IsGraphicSeries(std::string stringToCheck);
 
 private:
-    static std::vector<int> getNumbers(const std::string &numberSeries);
+    static std::vector<int> getNumbers(const std::string numberSeries);
 
     void ConvertFromNumberSeries(std::vector<int> &vertexLinks);
 };

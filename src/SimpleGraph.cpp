@@ -5,7 +5,7 @@
 #include <iostream>
 
 
-SimpleGraph::SimpleGraph(std::string &numberSeries) {
+SimpleGraph::SimpleGraph(std::string  numberSeries) {
     try{
         if(!IsGraphicSeries(numberSeries))
             throw "Provided number series is not a graphic series!";
@@ -21,7 +21,7 @@ SimpleGraph::SimpleGraph(std::string &numberSeries) {
     Print();
 }
 
-bool SimpleGraph::IsGraphicSeries(std::string &stringToCheck) {
+bool SimpleGraph::IsGraphicSeries(std::string stringToCheck) {
     std::stringstream stream(stringToCheck);
     std::vector<int> seriesToCheck = getNumbers(stringToCheck);
 
@@ -41,7 +41,7 @@ bool SimpleGraph::IsGraphicSeries(std::string &stringToCheck) {
     }
 }
 
-std::vector<int> SimpleGraph::getNumbers(const std::string &numberSeries) {
+std::vector<int> SimpleGraph::getNumbers(const std::string numberSeries) {
     std::stringstream stream(numberSeries);
     std::vector<int> vertexLinks;
 

@@ -73,3 +73,19 @@ Graph & Graph::BiggestComponent() const {
     Graph * testGraph = new Graph(m_graphRepr->BiggestComponent());
     return *testGraph;
 }
+
+int Graph::NumberOfComponents() const {
+    std::vector <int> ComponentsOfVerticles = m_graphRepr->Components();
+    int numberOfComponents = 1;
+    int acctualComponent = ComponentsOfVerticles[0];
+
+    for(int i = 1; i < ComponentsOfVerticles.size(); i++)
+    {
+        if(ComponentsOfVerticles[i] != acctualComponent) {
+            acctualComponent = ComponentsOfVerticles[i];
+            numberOfComponents++;
+        }
+    }
+
+    return numberOfComponents;
+}

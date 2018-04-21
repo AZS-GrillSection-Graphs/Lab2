@@ -258,7 +258,7 @@ void AdjacencyList::RelaxEdge(int edgeStart,int edgeEnd) {
     MakeConnectBetween(spareEdgeStart, edgeEnd);
 }
 
-GraphRepresentation * AdjacencyList::BiggestComponent() {
+std::vector <int> AdjacencyList::Components() {
     int componentNumber = -1;
     std::vector <int> componentsOfVerticles(m_adjList.size(), -1);
 
@@ -266,25 +266,30 @@ GraphRepresentation * AdjacencyList::BiggestComponent() {
         if(componentsOfVerticles[i] == -1) {
             componentNumber++;
             componentsOfVerticles[i] = componentNumber;
-            BiggestComponent_R(componentNumber, i, componentsOfVerticles);
+            Components_R(componentNumber, i, componentsOfVerticles);
         }
     }
 
+    return componentsOfVerticles;
+}
+
+void AdjacencyList::Components_R(const int componentNumber, const int index, std::vector<int> &componentsOfVerticles){
+    for(int i = 0; i < m_adjList[index].size(); i++) {
+        if(componentsOfVerticles[m_adjList[index][i]] == -1) {
+            componentsOfVerticles[m_adjList[index][i]] = componentNumber;
+            Components_R(componentNumber, m_adjList[index][i], componentsOfVerticles);
+        }
+    }
+}
+
+GraphRepresentation * AdjacencyList::BiggestComponent() {
+    std::vector<int> componentsOfVerticles = Components();
     int indexOfBiggestComponent = IndexOfBiggestComponent(componentsOfVerticles);
     AdjacencyList * biggestComponent = new AdjacencyList(*this);
 
     RemoveOtherComponents(componentsOfVerticles, indexOfBiggestComponent, biggestComponent);
 
     return biggestComponent;
-}
-
-void AdjacencyList::BiggestComponent_R(const int componentNumber, const int index, std::vector <int> & componentsOfVerticles){
-    for(int i = 0; i < m_adjList[index].size(); i++) {
-        if(componentsOfVerticles[m_adjList[index][i]] == -1) {
-            componentsOfVerticles[m_adjList[index][i]] = componentNumber;
-            BiggestComponent_R(componentNumber, m_adjList[index][i], componentsOfVerticles);
-        }
-    }
 }
 
 int AdjacencyList::IndexOfBiggestComponent(const std::vector<int> componentsOfVerticles) const {
