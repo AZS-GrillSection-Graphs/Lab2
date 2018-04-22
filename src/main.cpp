@@ -2,6 +2,7 @@
 #include <RandomSimpleGraph.h>
 #include "SimpleGraph.h"
 #include "RandomEulerGraph.h"
+#include "RandomKRegularGraph.h"
 
 int main() {
     std::string inputString("5 4 4 3 2 2 2");
@@ -21,12 +22,18 @@ int main() {
 //    biggestComponent.Print();
 //    biggestComponent.DrawGraph();
 
+//    srand(time(0));
+//    RandomEulerGraph randomEulerGraph;
+//    randomEulerGraph.SaveToFile("ListaSasiedztwa.txt");
+//    randomEulerGraph.EulerCycle();
+//    randomEulerGraph.Print();
+//    randomEulerGraph.DrawGraph();
+
     srand(time(0));
-    RandomEulerGraph randomEulerGraph;
-    randomEulerGraph.SaveToFile("ListaSasiedztwa.txt");
-    randomEulerGraph.EulerCycle();
-    randomEulerGraph.Print();
-    randomEulerGraph.DrawGraph();
+    RandomKRegularGraph kRegularGraph;
+    kRegularGraph.SaveToFile("ListaSasiedztwa.txt");
+    kRegularGraph.Print();
+    kRegularGraph.DrawGraph();
 
     return 0;
 }

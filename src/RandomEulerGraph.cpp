@@ -4,8 +4,8 @@
 
 #include "RandomEulerGraph.h"
 #include <cstdlib>
-#include <sstream>
 #include <iostream>
+#include <string>
 
 RandomEulerGraph::RandomEulerGraph() : SimpleGraph(GenerateEulerGraphNumberSeries()) {
     while(NumberOfComponents() > 1) {
@@ -13,10 +13,10 @@ RandomEulerGraph::RandomEulerGraph() : SimpleGraph(GenerateEulerGraphNumberSerie
     }
 }
 
-std::string RandomEulerGraph::GenerateEulerGraphNumberSeries() {     //gdzies w tej funkcji jest problem z pamiecia
-    std::stringstream numberSeries;
+std::string RandomEulerGraph::GenerateEulerGraphNumberSeries() {
+    std::string numberSeries;
 
-    int numberOfVerticles = rand() % 6 + 3;        //ogarniczenie dla czytelności
+    int numberOfVerticles = rand() % 6 + 3;        //limit for tests
 
     for(int i = 0; i < numberOfVerticles; i++) {
         int verticleDegree = rand() % (numberOfVerticles - 2) + 2;
@@ -24,11 +24,11 @@ std::string RandomEulerGraph::GenerateEulerGraphNumberSeries() {     //gdzies w 
         if(verticleDegree % 2)
             --verticleDegree;
 
-        numberSeries << " " << verticleDegree;
+        numberSeries += std::to_string(verticleDegree);
+        numberSeries += " ";
     }
-    std::cout << numberSeries.str();
 
-    return numberSeries.str();
+    return numberSeries;
 }
 
 void RandomEulerGraph::EulerCycle() {

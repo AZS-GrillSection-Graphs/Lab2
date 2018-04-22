@@ -9,4 +9,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall -Wextra")
 include_directories(include/)
 
 file(GLOB SOURCES src/* include/*)
-add_executable(${EXECUTABLE_NAME} ${SOURCES} src/RandomEulerGraph.cpp include/RandomEulerGraph.h)
+add_executable(${EXECUTABLE_NAME} ${SOURCES} src/RandomEulerGraph.cpp include/RandomEulerGraph.h src/RandomKRegularGraph.cpp include/RandomKRegularGraph.h)
