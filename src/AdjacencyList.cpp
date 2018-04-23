@@ -234,20 +234,27 @@ void AdjacencyList::RelaxEdge(int edgeStart,int edgeEnd) {
     int spareEdgeStart;
     int spareEdgeEnd;
 
-    do
-        spareEdgeStart = static_cast<int>(rand() % m_adjList.size());
-    while(spareEdgeStart == edgeStart || spareEdgeStart == edgeEnd);
+    int counter = 0;
 
-//    do {
-        spareEdgeEnd = m_adjList[spareEdgeStart][rand() % m_adjList[spareEdgeStart].size()];
-//    }
-//    while(spareEdgeEnd == edgeStart || spareEdgeEnd == edgeEnd);
+    do {
+        do
+            spareEdgeStart = static_cast<int>(rand() % m_adjList.size());
+        while (spareEdgeStart == edgeStart || spareEdgeStart == edgeEnd);
 
-    if(edgeStart == spareEdgeEnd)
-        std::swap(edgeStart, edgeEnd);
+        const int spareEdgeStartLinks = m_adjList[spareEdgeStart].size();
+        spareEdgeEnd = m_adjList[spareEdgeStart][rand() % spareEdgeStartLinks];
 
-    if(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd))
-        std::swap(edgeStart, edgeEnd);
+        if (edgeStart == spareEdgeEnd)
+            std::swap(edgeStart, edgeEnd);
+
+        counter++;
+        if(counter == 10)
+            break;
+    }
+    while(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd));
+
+    //    if(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd))
+//        std::swap(edgeStart, edgeEnd);
 
 //    if(AreVerticesConnected(spareEdgeStart, edgeEnd))
 //        std::swap(spareEdgeStart, spareEdgeEnd);

@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-
+#include <stack>
 
 SimpleGraph::SimpleGraph(std::string  numberSeries) {
     try{
@@ -57,30 +57,107 @@ std::vector<int> SimpleGraph::getNumbers(const std::string numberSeries) {
 void SimpleGraph::ConvertFromNumberSeries(std::vector<int> &vertexLinks) {
     const int verticesNumber = static_cast<const int>(vertexLinks.size());
 
-    for(int i=0; i < verticesNumber; ++i) {
-        int index = i + 1;
-        if(i < verticesNumber-1) {
-            while (vertexLinks[i] > 0) {
-                while (m_graphRepr->AreVerticesConnected(i, index) || vertexLinks[index] == 0)
-                    ++index;
-                if ( index < verticesNumber ) {
-                    --vertexLinks[index];
-                    m_graphRepr->MakeConnectBetween(i, index);
-                } else {
-                    --vertexLinks[i];
-                    m_graphRepr->MakeConnectBetween(i, i);
-                    RelaxEdge(i, i);
-                }
-                --vertexLinks[i];
+    for(int vertex=0; vertex < verticesNumber - 1; ++vertex) {
+        int vertexToLink = vertex+1;
+
+        while(vertexLinks[vertex]) {
+            while(vertexLinks[vertexToLink] == 0 || m_graphRepr->AreVerticesConnected(vertex, vertexToLink)) {
+                if(vertexToLink < verticesNumber-1)
+                    vertexToLink++;
+                else
+                    break;
             }
-        } else {
-            while(vertexLinks[i] > 0)
-            {
-                --vertexLinks[i];
-                --vertexLinks[i];
-                m_graphRepr->MakeConnectBetween(i, i);
-                RelaxEdge(i, i);
+            if(vertexToLink == verticesNumber-1 && !m_graphRepr->AreVerticesConnected(vertex, vertexToLink)) {
+                --vertexLinks[vertex];
+                --vertexLinks[vertexToLink];
+                m_graphRepr->MakeConnectBetween(vertex, vertexToLink);
+            } else if(m_graphRepr->AreVerticesConnected(vertex, vertexToLink)) {
+                if(vertexLinks[vertex]%2) {
+                    // wielokrotna
+                    --vertexLinks[vertex];
+                    --vertexLinks[vertexToLink];
+                    m_graphRepr->MakeConnectBetween(vertex, vertexToLink);
+                    RelaxEdge(vertex, vertexToLink);
+                } else {
+                    // petla
+                    --vertexLinks[vertex];
+                    --vertexLinks[vertex];
+                    m_graphRepr->MakeConnectBetween(vertex, vertex);
+                    RelaxEdge(vertex, vertex);
+                }
+            } else {
+                // normal case
+                --vertexLinks[vertex];
+                --vertexLinks[vertexToLink];
+                m_graphRepr->MakeConnectBetween(vertex, vertexToLink);
             }
         }
     }
+
+    // Obsługa ostatni wierzchołek
+    const int lastVertex = verticesNumber-1;
+    while(vertexLinks[lastVertex]) {
+        --vertexLinks[lastVertex];
+        --vertexLinks[lastVertex];
+        m_graphRepr->MakeConnectBetween(lastVertex, lastVertex);
+        RelaxEdge(lastVertex, lastVertex);
+    }
+
+}
+
+void SimpleGraph::DoesHamiltonCycleExist() const {
+    std::stack <int> vertices;
+    const int numberOfVertices = m_graphRepr->GetAdjList().size();
+    std::vector <bool> visited(numberOfVertices);
+
+    if(numberOfVertices < 20)
+        Hamilton_R(numberOfVertices, 0, visited, vertices);
+    else
+        std::cout << "Graph is too big." << std::endl;
+
+}
+
+void SimpleGraph::Hamilton_R(const int verticesNumber, int vertex, std::vector<bool> &visited,
+                             std::stack<int> &vertices) const {
+    vertices.push(vertex);
+    if(vertices.size() >= verticesNumber) {
+        bool testCycle = false;
+        std::vector <int> & neighbours = m_graphRepr->GetAdjList()[vertex];
+        for(int neighborIndex = 0; neighborIndex < neighbours.size(); neighborIndex++) {
+            if(neighbours[verticesNumber] == 0) {
+                testCycle = true;
+                break;
+            }
+        }
+        if(testCycle) {
+            std::cout << "Hamiltonian Cycle: " << std::endl;
+        }
+        else {
+            std::cout << "Hamiltonian Path: " << std::endl;
+        }
+
+        if(testCycle)
+            std::cout << "1 ";
+        PrintStack(vertices);
+    } else {
+        visited[vertex] = true;
+
+        std::vector <int> & neighbours = m_graphRepr->GetAdjList()[vertex];
+        for(int neighborIndex = 0; neighborIndex < neighbours.size(); neighborIndex++)
+            if(!visited[neighborIndex])
+                Hamilton_R(verticesNumber, neighbours[neighborIndex], visited, vertices);
+
+        visited[vertex] = false;
+    }
+    vertices.pop();
+}
+
+void SimpleGraph::PrintStack(std::stack<int> &stack) const {
+    std::stack <int> stackCopy(stack);
+
+    while(stackCopy.size() > 0) {
+        std::cout << stackCopy.top() + 1 << " ";
+        stackCopy.pop();
+    }
+    std::cout << std::endl;
 }

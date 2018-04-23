@@ -15,7 +15,6 @@ std::string RandomKRegularGraph::GenerateKRegularGraphNumberSeries() {
     while(numberOfVerticles % 2 && degreeOfVerticles % 2) {
         numberOfVerticles = rand() % 20 + 1;                   //limitation for tests
         degreeOfVerticles = rand() % numberOfVerticles;
-
     }
 
     for(int i = 0; i < numberOfVerticles; i++) {
