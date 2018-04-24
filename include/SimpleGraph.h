@@ -13,9 +13,7 @@ public:
 
 private:
     static std::vector<int> getNumbers(const std::string numberSeries);
-
     void ConvertFromNumberSeries(std::vector<int> &vertexLinks);
-
     void Hamilton_R(const int verticesNumber, int neighbourIndex, std::vector<bool> &visited, std::stack<int> &vertices) const;
     void PrintStack(std::stack <int> & stack) const;
 };

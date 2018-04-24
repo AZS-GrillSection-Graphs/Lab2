@@ -6,6 +6,7 @@
 
 int main() {
     std::string inputString("5 4 4 3 2 2 2");
+//    std::string inputString("2 2 2 1 1 1 1");
 
     // Zadanie 1
     std::cout << "Is the string a graphic series? " << SimpleGraph::IsGraphicSeries(inputString) << std::endl;
@@ -13,6 +14,8 @@ int main() {
     simpleGraph.Print();
     simpleGraph.ConvertGraph();
     simpleGraph.DrawGraph();
+
+    // Zadanie 3
     Graph bc = simpleGraph.BiggestComponent();
     bc.ConvertGraph();
     bc.DrawGraph();

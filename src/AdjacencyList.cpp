@@ -40,9 +40,7 @@ void AdjacencyList::Print() const {
         std::cout << i+1 << ": ";
         if(linksNumber)
             for(int j = 0; j < linksNumber; ++j)
-            {
                 std::cout << m_adjList[i][j] + 1 << " ";
-            }
         else
             std::cout << 0 << " ";
         std::cout << std::endl;
@@ -78,7 +76,7 @@ bool AdjacencyList::AreVerticesConnected(const int firstVertex, const int second
                          != m_adjList[firstVertex].end();
 
     return firstInSecondPresent && secondInFirstPresent;
-    }
+}
 
 void AdjacencyList::SaveToFile(const char *fileName) const {
     std::ofstream file;
@@ -127,18 +125,13 @@ void AdjacencyList::Convert() const {
     adjMatrixFile << "MS" << std::endl;
 
     int ** adjMatrix = new int * [verticesNumber];
-    for(int i = 0; i < verticesNumber; ++i)
-    {
+    for(int i = 0; i < verticesNumber; ++i) {
         adjMatrix[i] = new int [verticesNumber];
         for(int j = 0; j < verticesNumber; ++j)
-        {
             adjMatrix[i][j] = 0;
-        }
     }
 
-
-    for(int i = 0; i < verticesNumber; ++i)
-    {
+    for(int i = 0; i < verticesNumber; ++i) {
         if(m_adjList[i].size())
             for(int j = 0; j < m_adjList[i].size(); ++j)
                 adjMatrix[i][m_adjList[i][j]] = 1;
@@ -146,9 +139,7 @@ void AdjacencyList::Convert() const {
             adjMatrix[i][i] = 1;
 
         for(int j = 0; j < verticesNumber; ++j)
-        {
             adjMatrixFile << adjMatrix[i][j] << " ";
-        }
         adjMatrixFile << std::endl;
     }
     adjMatrixFile.close();
@@ -176,21 +167,16 @@ void AdjacencyList::Convert() const {
             numOfEdges += adjMatrix[i][j];
 
     int ** incMatrix = new int * [numOfEdges];
-    for(int i = 0; i < numOfEdges; ++i)
-    {
+    for(int i = 0; i < numOfEdges; ++i) {
         incMatrix[i] = new int [verticesNumber];
         for(int j = 0; j < verticesNumber; ++j)
-        {
             incMatrix[i][j] = 0;
-        }
     }
 
     int edge = 0;
 
-    for(int i = 0; i < verticesNumber; ++i)
-    {
-        for(int j = i; j < verticesNumber; ++j)
-        {
+    for(int i = 0; i < verticesNumber; ++i) {
+        for(int j = i; j < verticesNumber; ++j) {
             if(adjMatrix[i][j] == 1)
             {
                 incMatrix[edge][i] = 1;
@@ -200,10 +186,8 @@ void AdjacencyList::Convert() const {
         }
     }
 
-    for(int j = 0; j < verticesNumber; ++j)
-    {
-        for(int i = 0; i < edge; ++i)
-        {
+    for(int j = 0; j < verticesNumber; ++j) {
+        for(int i = 0; i < edge; ++i) {
             if(incMatrix[i][j] == 1)
                 incMatrixFile << "1 ";
             else
@@ -231,7 +215,7 @@ void AdjacencyList::RelaxEdge() {
     RelaxEdge(edgeStart, edgeEnd);
 }
 
-void AdjacencyList::RelaxEdge(int edgeStart,int edgeEnd) {
+void AdjacencyList::RelaxEdge(int edgeStart, int edgeEnd) {
     int spareEdgeStart;
     int spareEdgeEnd;
 
@@ -253,12 +237,6 @@ void AdjacencyList::RelaxEdge(int edgeStart,int edgeEnd) {
             break;
     }
     while(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd));
-
-    //    if(AreVerticesConnected(edgeStart, spareEdgeEnd) || AreVerticesConnected(spareEdgeStart, edgeEnd))
-//        std::swap(edgeStart, edgeEnd);
-
-//    if(AreVerticesConnected(spareEdgeStart, edgeEnd))
-//        std::swap(spareEdgeStart, spareEdgeEnd);
 
     DeleteEdge(spareEdgeStart, spareEdgeEnd);
     DeleteEdge(edgeStart, edgeEnd);
