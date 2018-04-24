@@ -107,7 +107,7 @@ void SimpleGraph::ConvertFromNumberSeries(std::vector<int> &vertexLinks) {
 
 void SimpleGraph::DoesHamiltonCycleExist() const {
     std::stack <int> vertices;
-    const int numberOfVertices = m_graphRepr->GetAdjList().size();
+    const int numberOfVertices = static_cast<const int>(m_graphRepr->GetAdjList().size());
     std::vector <bool> visited(numberOfVertices);
 
     if(numberOfVertices < 20)
@@ -124,7 +124,7 @@ void SimpleGraph::Hamilton_R(const int verticesNumber, int vertex, std::vector<b
         bool testCycle = false;
         std::vector <int> & neighbours = m_graphRepr->GetAdjList()[vertex];
         for(int neighborIndex = 0; neighborIndex < neighbours.size(); neighborIndex++) {
-            if(neighbours[verticesNumber] == 0) {
+            if(neighbours[neighborIndex] == 0) {
                 testCycle = true;
                 break;
             }
@@ -144,7 +144,7 @@ void SimpleGraph::Hamilton_R(const int verticesNumber, int vertex, std::vector<b
 
         std::vector <int> & neighbours = m_graphRepr->GetAdjList()[vertex];
         for(int neighborIndex = 0; neighborIndex < neighbours.size(); neighborIndex++)
-            if(!visited[neighborIndex])
+            if(!visited[neighbours[neighborIndex]])
                 Hamilton_R(verticesNumber, neighbours[neighborIndex], visited, vertices);
 
         visited[vertex] = false;
