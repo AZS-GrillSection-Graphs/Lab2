@@ -1,42 +1,52 @@
 #include <iostream>
-#include <RandomSimpleGraph.h>
 #include "SimpleGraph.h"
+#include "RandomSimpleGraph.h"
 #include "RandomEulerGraph.h"
 #include "RandomKRegularGraph.h"
 
 int main() {
-//    std::string inputString("5 4 4 3 2 2 2");
-    std::string inputString("4 4 4 4 4 4");
-//
+    std::string inputString("5 4 4 3 2 2 2");
+
+    // Zadanie 1
     std::cout << "Is the string a graphic series? " << SimpleGraph::IsGraphicSeries(inputString) << std::endl;
     SimpleGraph simpleGraph(inputString);
-    simpleGraph.SaveToFile("ListaSasiedztwa.txt");
+    simpleGraph.Print();
+    simpleGraph.ConvertGraph();
+    simpleGraph.DrawGraph();
+    Graph bc = simpleGraph.BiggestComponent();
+    bc.ConvertGraph();
+    bc.DrawGraph();
+
+    // Zadanie 6
     simpleGraph.DoesHamiltonCycleExist();
     simpleGraph.DrawGraph();
 
-//    std::cout << "RANDOM SIMPLE GRAPH\n";
-//    RandomSimpleGraph randomSimpleGraph(inputString);
-//    randomSimpleGraph.SaveToFile("ListaSasiedztwa.txt");
-//    randomSimpleGraph.DrawGraph();
+    // Zadanie 2
+    std::cout << "RANDOM SIMPLE GRAPH\n";
+    RandomSimpleGraph randomSimpleGraph(inputString);
+    randomSimpleGraph.ConvertGraph();
+    randomSimpleGraph.DrawGraph();
 
+    // Zadanie 4
+    srand(time(0));
+    RandomEulerGraph randomEulerGraph;
+    randomEulerGraph.ConvertGraph();
+    randomEulerGraph.EulerCycle();
+    randomEulerGraph.Print();
+    randomEulerGraph.DrawGraph();
 
-//    srand(time(0));
-//    RandomEulerGraph randomEulerGraph;
-//    randomEulerGraph.SaveToFile("ListaSasiedztwa.txt");
-//    randomEulerGraph.EulerCycle();
-//    randomEulerGraph.Print();
-//    randomEulerGraph.DrawGraph();
+    // Zadanie 5
+    srand(time(0));
+    RandomKRegularGraph kRegularGraph;
+    kRegularGraph.ConvertGraph();
+    kRegularGraph.Print();
+    kRegularGraph.DrawGraph();
 
-//    srand(time(0));
-//    RandomKRegularGraph kRegularGraph;
-//    kRegularGraph.SaveToFile("ListaSasiedztwa.txt");
-//    kRegularGraph.Print();
-//    kRegularGraph.DrawGraph();
-//
-//    Graph biggestComponent = kRegularGraph.BiggestComponent();
-//    biggestComponent.SaveToFile("ListaSasiedztwa.txt");
-//    biggestComponent.Print();
-//    biggestComponent.DrawGraph();
+    // Zadanie 3
+    Graph biggestComponent = kRegularGraph.BiggestComponent();
+    biggestComponent.ConvertGraph();
+    biggestComponent.Print();
+    biggestComponent.DrawGraph();
 
     return 0;
 }

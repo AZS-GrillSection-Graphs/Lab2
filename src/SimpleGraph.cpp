@@ -18,7 +18,6 @@ SimpleGraph::SimpleGraph(std::string  numberSeries) {
     m_graphRepr = new AdjacencyList(vertexLinks.size());
 
     ConvertFromNumberSeries(vertexLinks);
-    Print();
 }
 
 bool SimpleGraph::IsGraphicSeries(std::string stringToCheck) {
@@ -94,7 +93,6 @@ void SimpleGraph::ConvertFromNumberSeries(std::vector<int> &vertexLinks) {
         }
     }
 
-    // Obsługa ostatni wierzchołek
     const int lastVertex = verticesNumber-1;
     while(vertexLinks[lastVertex]) {
         --vertexLinks[lastVertex];
@@ -132,13 +130,12 @@ void SimpleGraph::Hamilton_R(const int verticesNumber, int vertex, std::vector<b
         if(testCycle) {
             std::cout << "Hamiltonian Cycle: " << std::endl;
         }
-        else {
-            std::cout << "Hamiltonian Path: " << std::endl;
+
+        if(testCycle) {
+            std::cout << "1 ";
+            PrintStack(vertices);
         }
 
-        if(testCycle)
-            std::cout << "1 ";
-        PrintStack(vertices);
     } else {
         visited[vertex] = true;
 

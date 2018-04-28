@@ -38,10 +38,13 @@ void AdjacencyList::Print() const {
     {
         const int linksNumber = m_adjList[i].size();
         std::cout << i+1 << ": ";
-        for(int j = 0; j < linksNumber; ++j)
-        {
-            std::cout << m_adjList[i][j] + 1 << " ";
-        }
+        if(linksNumber)
+            for(int j = 0; j < linksNumber; ++j)
+            {
+                std::cout << m_adjList[i][j] + 1 << " ";
+            }
+        else
+            std::cout << 0 << " ";
         std::cout << std::endl;
     }
 }
@@ -98,9 +101,7 @@ void AdjacencyList::SaveToFile(const char *fileName) const {
     {
         const int linksNumber = m_adjList[i].size();
         for(int j = 0; j < linksNumber; ++j)
-        {
             file << m_adjList[i][j] + 1 << " ";
-        }
         file << std::endl;
     }
 
@@ -138,10 +139,11 @@ void AdjacencyList::Convert() const {
 
     for(int i = 0; i < verticesNumber; ++i)
     {
-        for(int j = 0; j < m_adjList[i].size(); ++j)
-        {
-            adjMatrix[i][m_adjList[i][j]] = 1;
-        }
+        if(m_adjList[i].size())
+            for(int j = 0; j < m_adjList[i].size(); ++j)
+                adjMatrix[i][m_adjList[i][j]] = 1;
+        else
+            adjMatrix[i][i] = 1;
 
         for(int j = 0; j < verticesNumber; ++j)
         {
@@ -170,9 +172,8 @@ void AdjacencyList::Convert() const {
     int numOfEdges = 0;
     incMatrixFile << "MI" << std::endl;
     for(int i = 0; i < verticesNumber; ++i)
-        for(int j = i + 1; j < verticesNumber; ++j)
+        for(int j = i; j < verticesNumber; ++j)
             numOfEdges += adjMatrix[i][j];
-
 
     int ** incMatrix = new int * [numOfEdges];
     for(int i = 0; i < numOfEdges; ++i)
@@ -188,7 +189,7 @@ void AdjacencyList::Convert() const {
 
     for(int i = 0; i < verticesNumber; ++i)
     {
-        for(int j = i + 1; j < verticesNumber; ++j)
+        for(int j = i; j < verticesNumber; ++j)
         {
             if(adjMatrix[i][j] == 1)
             {
